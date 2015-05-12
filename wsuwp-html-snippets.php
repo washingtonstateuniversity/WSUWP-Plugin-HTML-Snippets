@@ -61,6 +61,9 @@ class WSU_HTML_Snippets {
 	public function display_html_snippet( $atts ) {
 		$default_atts = array(
 			'id' => 0,
+			'container' => '',
+			'container_class' => '',
+			'container_id' => '',
 		);
 		$atts = wp_parse_args( $atts, $default_atts );
 
@@ -76,6 +79,22 @@ class WSU_HTML_Snippets {
 
 		if ( ! $post || $this::$content_type_slug !== $post->post_type ) {
 			return '';
+		}
+
+		if ( in_array( $atts['container'], array( 'div', 'span' ) ) ) {
+			$container_open = '<' . $atts['container'];
+
+			if ( '' !== sanitize_key( $atts['container_class'] ) ) {
+				$container_open .= ' class="' . $atts['container_class'] . '"';
+			}
+
+			if ( '' !== sanitize_key( $atts['container_id'] ) ) {
+				$container_open .= ' id="' . $atts['container_id'] . '"';
+			}
+
+			$container_open .= '>';
+
+			return $container_open .  apply_filters( 'the_content', $post->post_content ) . '</' . $atts['container'] . '>';
 		}
 
 		return apply_filters( 'the_content', $post->post_content );

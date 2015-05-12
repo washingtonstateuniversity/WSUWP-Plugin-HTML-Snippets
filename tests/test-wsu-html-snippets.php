@@ -31,4 +31,28 @@ class Tests_WSU_HTML_Snippets extends WP_UnitTestCase {
 
 		$this->assertContains( '<h1>A Headline</h1>', apply_filters( 'the_content', $post->post_content ) );
 	}
+
+	public function test_html_snippet_shortcode_with_container() {
+		$html_snippet_id = $this->factory->post->create( array( 'post_type' => 'wsu_html_snippet', 'post_content' => '<h1>A Headline</h1>' ) );
+		$post_id = $this->factory->post->create( array( 'post_content' => '[html_snippet id=' . $html_snippet_id . ' container="div"]' ) );
+		$post = get_post( $post_id );
+
+		$this->assertContains( '<div><h1>A Headline</h1>' . "\n" . '</div>', apply_filters( 'the_content', $post->post_content ) );
+	}
+
+	public function test_html_snippet_shortcode_with_container_class() {
+		$html_snippet_id = $this->factory->post->create( array( 'post_type' => 'wsu_html_snippet', 'post_content' => '<h1>A Headline</h1>' ) );
+		$post_id = $this->factory->post->create( array( 'post_content' => '[html_snippet id=' . $html_snippet_id . ' container="div" container_class="test-class"]' ) );
+		$post = get_post( $post_id );
+
+		$this->assertContains( '<div class="test-class"><h1>A Headline</h1>' . "\n" . '</div>', apply_filters( 'the_content', $post->post_content ) );
+	}
+
+	public function test_html_snippet_shortcode_with_container_id() {
+		$html_snippet_id = $this->factory->post->create( array( 'post_type' => 'wsu_html_snippet', 'post_content' => '<h1>A Headline</h1>' ) );
+		$post_id = $this->factory->post->create( array( 'post_content' => '[html_snippet id=' . $html_snippet_id . ' container="div" container_id="container-id"]' ) );
+		$post = get_post( $post_id );
+
+		$this->assertContains( '<div id="container-id"><h1>A Headline</h1>' . "\n" . '</div>', apply_filters( 'the_content', $post->post_content ) );
+	}
 }

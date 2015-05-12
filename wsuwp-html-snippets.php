@@ -59,6 +59,13 @@ class WSU_HTML_Snippets {
 		register_post_type( $this::$content_type_slug, $args );
 	}
 
+	/**
+	 * Display an HTML Snippet shortcode given attributes.
+	 *
+	 * @param array $atts
+	 *
+	 * @return string
+	 */
 	public function display_html_snippet( $atts ) {
 		$default_atts = array(
 			'id' => 0,
@@ -68,11 +75,7 @@ class WSU_HTML_Snippets {
 		);
 		$atts = wp_parse_args( $atts, $default_atts );
 
-		if ( empty( $atts['id'] ) ) {
-			return '';
-		}
-
-		if ( 0 === absint( $atts['id'] ) ) {
+		if ( empty( $atts['id'] ) || 0 === absint( $atts['id'] ) ) {
 			return '';
 		}
 

@@ -21,6 +21,7 @@ class WSU_HTML_Snippets {
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'register_content_type' ) );
+		add_action( 'init', array( $this, 'setup_shortcode_ui' ) );
 		add_shortcode( 'html_snippet', array( $this, 'display_html_snippet' ) );
 	}
 
@@ -98,6 +99,54 @@ class WSU_HTML_Snippets {
 		}
 
 		return apply_filters( 'the_content', $post->post_content );
+	}
+
+	/**
+	 * Configure support for the HTML Snippet shortcode with Shortcode UI.
+	 */
+	public function setup_shortcode_ui() {
+		if ( ! function_exists( 'shortcode_ui_register_for_shortcode' ) ) {
+			return;
+		}
+
+		$args = array(
+			'label'         => 'HTML Snippet',
+			'listItemImage' => 'dashicons-editor-quote',
+			'post_type'     => array( 'post', 'page' ),
+			'attrs'         => array(
+				array(
+					'label'    => 'Select HTML Snippet',
+					'attr'     => 'id',
+					'type'     => 'post_select',
+					'query'    => array( 'post_type' => $this::$content_type_slug ),
+					'multiple' => false,
+				),
+
+				array(
+					'label'    => 'Wrapping container',
+					'attr'     => 'container',
+					'type'     => 'select',
+					'options'  => array(
+						''     => 'None',
+						'div'  => 'div',
+						'span' => 'span',
+					)
+				),
+
+				array(
+					'label' => 'Wrapping container ID',
+					'attr'  => 'container_id',
+					'type'  => 'text',
+				),
+
+				array(
+					'label' => 'Wrapping container class',
+					'attr'  => 'container_class',
+					'type'  => 'text',
+				)
+			),
+		);
+		shortcode_ui_register_for_shortcode( 'html_snippet', $args );
 	}
 }
 new WSU_HTML_Snippets();

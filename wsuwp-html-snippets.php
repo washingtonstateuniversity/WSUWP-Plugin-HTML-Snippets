@@ -19,6 +19,7 @@ class WSU_HTML_Snippets {
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'register_content_type' ) );
+		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 10 );
 		add_action( 'init', array( $this, 'setup_shortcode_ui' ) );
 		add_shortcode( 'html_snippet', array( $this, 'display_html_snippet' ) );
 	}
@@ -55,6 +56,32 @@ class WSU_HTML_Snippets {
 			'supports'           => array( 'title', 'editor' ),
 		);
 		register_post_type( $this::$content_type_slug, $args );
+	}
+
+	/**
+	 * Add the meta boxes used for HTML Snippets.
+	 *
+	 * @param string $post_type The post type of the current post being edited.
+	 */
+	public function add_meta_boxes( $post_type ) {
+		if ( $this::$content_type_slug !== $post_type || ! is_multisite() ) {
+			return;
+		}
+
+		add_meta_box( 'wsu_snippet_id', 'Snippet ID', array( $this, 'display_snippet_id_metabox' ), null, 'side', 'high' );
+	}
+
+	/**
+	 * Display the snippet ID for the current HTML snippet being edited. This snippet ID can
+	 * be used to embed a snippet in content throughout this site's network.
+	 *
+	 * @param WP_Post $post The current post being edited.
+	 */
+	public function display_snippet_id_metabox( $post ) {
+		?>
+		<p class="description">Use this ID to embed an HTML snippet in another site on this network.</p>
+		<p><strong><?php echo get_current_blog_id() . '-' . $post->ID; ?></strong></p>
+		<?php
 	}
 
 	/**

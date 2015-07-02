@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WSU HTML Snippets
-Version: 0.1.0
+Version: 0.2.0
 Description: Embed common HTML content throughout a WordPress site.
 Author: washingtonstateuniversity, jeremyfelt
 Author URI: https://web.wsu.edu/

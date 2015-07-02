@@ -6,8 +6,6 @@ Description: Embed common HTML content throughout a WordPress site.
 Author: washingtonstateuniversity, jeremyfelt
 Author URI: https://web.wsu.edu/
 Plugin URI: https://web.wsu.edu/
-Text Domain: wsuwp-html-snippets
-Domain Path: /languages
 */
 
 class WSU_HTML_Snippets {

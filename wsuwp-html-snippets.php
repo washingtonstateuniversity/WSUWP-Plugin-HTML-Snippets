@@ -6,8 +6,6 @@ Description: Embed common HTML content throughout a WordPress site.
 Author: washingtonstateuniversity, jeremyfelt
 Author URI: https://web.wsu.edu/
 Plugin URI: https://web.wsu.edu/
-Text Domain: wsuwp-html-snippets
-Domain Path: /languages
 */
 
 class WSU_HTML_Snippets {
@@ -21,6 +19,7 @@ class WSU_HTML_Snippets {
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'register_content_type' ) );
+		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 10 );
 		add_action( 'init', array( $this, 'setup_shortcode_ui' ) );
 		add_shortcode( 'html_snippet', array( $this, 'display_html_snippet' ) );
 	}
@@ -60,6 +59,32 @@ class WSU_HTML_Snippets {
 	}
 
 	/**
+	 * Add the meta boxes used for HTML Snippets.
+	 *
+	 * @param string $post_type The post type of the current post being edited.
+	 */
+	public function add_meta_boxes( $post_type ) {
+		if ( $this::$content_type_slug !== $post_type || ! is_multisite() ) {
+			return;
+		}
+
+		add_meta_box( 'wsu_snippet_id', 'Snippet ID', array( $this, 'display_snippet_id_metabox' ), null, 'side', 'high' );
+	}
+
+	/**
+	 * Display the snippet ID for the current HTML snippet being edited. This snippet ID can
+	 * be used to embed a snippet in content throughout this site's network.
+	 *
+	 * @param WP_Post $post The current post being edited.
+	 */
+	public function display_snippet_id_metabox( $post ) {
+		?>
+		<p class="description">Use this ID to embed an HTML snippet in another site on this network.</p>
+		<p><strong><?php echo get_current_blog_id() . '-' . $post->ID; ?></strong></p>
+		<?php
+	}
+
+	/**
 	 * Display an HTML Snippet shortcode given attributes.
 	 *
 	 * @param array $atts
@@ -69,17 +94,45 @@ class WSU_HTML_Snippets {
 	public function display_html_snippet( $atts ) {
 		$default_atts = array(
 			'id' => 0,
+			'snippet_id' => '',
 			'container' => '',
 			'container_class' => '',
 			'container_id' => '',
 		);
 		$atts = wp_parse_args( $atts, $default_atts );
 
-		if ( empty( $atts['id'] ) || 0 === absint( $atts['id'] ) ) {
+		// If a snippet ID has been passed, we default to parsing it. This should be a
+		// string that breaks into a site ID and a post ID for the desired HTML snippet.
+		// This is only supported in multisite.
+		if ( is_multisite() && ! empty( $atts['snippet_id'] ) ) {
+			$snippet_id = explode( '-', $atts['snippet_id'] );
+
+			if ( 2 !== count( $snippet_id ) ) {
+				return '';
+			}
+
+			$site_id = absint( $snippet_id[0] );
+			$site_details = get_blog_details( $site_id );
+
+			// The snippet must be pulled from a site on the same network.
+			if ( get_current_site()->id != $site_details->site_id ) {
+				return '';
+			}
+
+			$atts['id'] = absint( $snippet_id[1] );
+
+			switch_to_blog( $site_id );
+		}
+
+		if ( ( empty( $atts['id'] ) || 0 === absint( $atts['id'] ) ) ) {
 			return '';
 		}
 
 		$post = get_post( $atts['id'] );
+
+		if ( is_multisite() && ms_is_switched() ) {
+			restore_current_blog();
+		}
 
 		if ( ! $post || $this::$content_type_slug !== $post->post_type ) {
 			return '';
@@ -123,6 +176,12 @@ class WSU_HTML_Snippets {
 					'type'     => 'post_select',
 					'query'    => array( 'post_type' => $this::$content_type_slug ),
 					'multiple' => false,
+				),
+
+				array(
+					'label'    => 'Or HTML Snippet ID',
+					'attr'     => 'snippet_id',
+					'type'     => 'text',
 				),
 
 				array(

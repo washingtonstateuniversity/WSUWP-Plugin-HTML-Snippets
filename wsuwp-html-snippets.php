@@ -74,13 +74,10 @@ class WSU_HTML_Snippets {
 		);
 		$atts = wp_parse_args( $atts, $default_atts );
 
-		if ( ( empty( $atts['id'] ) || 0 === absint( $atts['id'] ) ) && empty( $atts['snippet_id'] ) ) {
-			return '';
-		}
-
 		// If a snippet ID has been passed, we default to parsing it. This should be a
 		// string that breaks into a site ID and a post ID for the desired HTML snippet.
-		if ( ! empty( $atts['snippet_id'] ) ) {
+		// This is only supported in multisite.
+		if ( is_multisite() && ! empty( $atts['snippet_id'] ) ) {
 			$snippet_id = explode( '-', $atts['snippet_id'] );
 
 			if ( 2 !== count( $snippet_id ) ) {
@@ -93,9 +90,13 @@ class WSU_HTML_Snippets {
 			switch_to_blog( $site_id );
 		}
 
+		if ( ( empty( $atts['id'] ) || 0 === absint( $atts['id'] ) ) ) {
+			return '';
+		}
+
 		$post = get_post( $atts['id'] );
 
-		if ( ms_is_switched() ) {
+		if ( is_multisite() && ms_is_switched() ) {
 			restore_current_blog();
 		}
 

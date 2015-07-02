@@ -112,6 +112,13 @@ class WSU_HTML_Snippets {
 			}
 
 			$site_id = absint( $snippet_id[0] );
+			$site_details = get_blog_details( $site_id );
+
+			// The snippet must be pulled from a site on the same network.
+			if ( get_current_site()->id != $site_details->site_id ) {
+				return '';
+			}
+
 			$atts['id'] = absint( $snippet_id[1] );
 
 			switch_to_blog( $site_id );

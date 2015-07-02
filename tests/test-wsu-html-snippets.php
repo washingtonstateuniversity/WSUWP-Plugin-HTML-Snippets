@@ -68,6 +68,10 @@ class Tests_WSU_HTML_Snippets extends WP_UnitTestCase {
 		$post_id = $this->factory->post->create( array( 'post_content' => '[html_snippet snippet_id="' . $html_snippet_id . '"]' ) );
 		$post = get_post( $post_id );
 
-		$this->assertContains( '<h1>A Headline</h1>', apply_filters( 'the_content', $post->post_content ) );
+		if ( is_multisite() ) {
+			$this->assertContains( '<h1>A Headline</h1>', apply_filters( 'the_content', $post->post_content ) );
+		} else {
+			$this->assertEquals( "\n", apply_filters( 'the_content', $post->post_content ) );
+		}
 	}
 }

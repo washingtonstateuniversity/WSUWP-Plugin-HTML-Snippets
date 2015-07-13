@@ -151,10 +151,16 @@ class WSU_HTML_Snippets {
 
 			$container_open .= '>';
 
-			return $container_open .  apply_filters( 'the_content', $post->post_content ) . '</' . $atts['container'] . '>';
+			$content = $container_open .  apply_filters( 'the_content', $post->post_content ) . '</' . $atts['container'] . '>';
+		} else {
+			$content = apply_filters( 'the_content', $post->post_content );
 		}
 
-		return apply_filters( 'the_content', $post->post_content );
+		if ( ! has_filter( 'the_content', 'wpautop' ) ) {
+			$content = wpautop( $content );
+		}
+
+		return $content;
 	}
 
 	/**

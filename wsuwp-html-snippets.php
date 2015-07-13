@@ -173,7 +173,7 @@ class WSU_HTML_Snippets {
 
 		$args = array(
 			'label'         => 'HTML Snippet',
-			'listItemImage' => 'dashicons-editor-quote',
+			'listItemImage' => 'dashicons-format-aside',
 			'post_type'     => array( 'post', 'page' ),
 			'attrs'         => array(
 				array(

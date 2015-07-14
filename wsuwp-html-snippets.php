@@ -152,9 +152,12 @@ class WSU_HTML_Snippets {
 			$container_open .= '>';
 
 			$content = $container_open .  apply_filters( 'the_content', $post->post_content ) . '</' . $atts['container'] . '>';
+			$content = do_shortcode( $content );
 		} else {
 			$content = apply_filters( 'the_content', $post->post_content );
+			$content = do_shortcode( $content );
 		}
+
 
 		if ( ! has_filter( 'the_content', 'wpautop' ) ) {
 			$content = wpautop( $content );

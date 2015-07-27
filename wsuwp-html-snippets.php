@@ -22,8 +22,27 @@ class WSU_HTML_Snippets {
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 10 );
 		add_action( 'init', array( $this, 'setup_shortcode_ui' ) );
 		add_shortcode( 'html_snippet', array( $this, 'display_html_snippet' ) );
+		add_filter( 'shortcode_ui_fields', array( $this, 'custom_ui_fields' ) );
+		add_action( 'print_shortcode_ui_templates', array( $this, 'print_custom_templates' ) );
 	}
 
+	public function custom_ui_fields( $fields ) {
+		$fields['edit_origin'] = array(
+			'template' => 'shortcode-ui-field-edit-origin',
+		);
+
+		return $fields;
+	}
+
+	public function print_custom_templates() {
+		?>
+		<script type="text/html" id="tmpl-shortcode-ui-field-edit-origin">
+			<div class="field-block">
+				<a href="{{ data.href }}">Edit HTML Snippet</a>
+			</div>
+		</script>
+		<?php
+	}
 	/**
 	 * Register the content type to be used for HTML Snippets
 	 */
@@ -214,7 +233,12 @@ class WSU_HTML_Snippets {
 					'label' => 'Wrapping container class',
 					'attr'  => 'container_class',
 					'type'  => 'text',
-				)
+				),
+
+				array(
+					'href' => 'http://google.com',
+					'type'  => 'edit_origin',
+				),
 			),
 		);
 		shortcode_ui_register_for_shortcode( 'html_snippet', $args );

@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WSU HTML Snippets
-Version: 0.2.2
+Version: 1.0.0
 Description: Embed common HTML content throughout a WordPress site.
 Author: washingtonstateuniversity, jeremyfelt
 Author URI: https://web.wsu.edu/
@@ -22,6 +22,8 @@ class WSU_HTML_Snippets {
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 10 );
 		add_action( 'init', array( $this, 'setup_shortcode_ui' ) );
 		add_shortcode( 'html_snippet', array( $this, 'display_html_snippet' ) );
+
+		require_once __DIR__ . '/includes/html-snippet-settings.php';
 	}
 
 	/**
@@ -54,7 +56,9 @@ class WSU_HTML_Snippets {
 			'has_archive'        => false,
 			'hierarchical'       => false,
 			'supports'           => array( 'title', 'editor' ),
+			'show_in_rest'       => ( ! empty( get_option('html_snippet_classic_editor', false ) ) ) ? false : true,
 		);
+
 		register_post_type( $this::$content_type_slug, $args );
 	}
 
@@ -79,8 +83,8 @@ class WSU_HTML_Snippets {
 	 */
 	public function display_snippet_id_metabox( $post ) {
 		?>
-		<p class="description">Use this ID to embed an HTML snippet in another site on this network.</p>
-		<p><strong><?php echo get_current_blog_id() . '-' . $post->ID; ?></strong></p>
+		<p class="description">To embed an HTML snippet use the following shortcode.</p>
+		<p>[html_snippet id="<?php echo esc_attr( $post->ID ); ?>"]</p>
 		<?php
 	}
 

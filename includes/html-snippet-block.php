@@ -41,6 +41,16 @@ class Block_WSUWP_HTML_Snippet
             )
         );
 
+        add_filter(
+            'wsu_allowed_blocks_filter', function ( $blocks ) {
+                if (!in_array(self::$block_name, $blocks, true)) {
+                    array_push($blocks, self::$block_name);
+                }
+                
+                return $blocks;
+            }  
+        );
+
     }
 
 

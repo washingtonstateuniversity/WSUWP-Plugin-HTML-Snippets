@@ -1,0 +1,66 @@
+$component-class-name: ".wp-block-wsuwp-html-snippet";
+
+.block-editor #{$component-class-name} {
+  box-shadow: inset 0 0 0 1px #1e1e1e;
+  padding: 1em;
+
+  &__header {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  &__label {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-size: 18pt;
+    font-weight: normal;
+    display: flex;
+    // margin-bottom: 16px;
+    align-items: center;
+    gap: 1ch;
+  }
+
+  &__preview-toggle {
+    gap: 0.5em;
+  }
+
+  &__select-control {
+    select {
+      padding: 1.25rem 1rem !important;
+      max-width: none;
+      height: auto !important;
+    }
+
+    .components-input-control__backdrop {
+      border-color: #b3b3b3 !important;
+      border-radius: 4px;
+    }
+  }
+
+  .components-spinner {
+    margin: 1em auto 0.25em;
+    display: block;
+  }
+
+  &__preview {
+    // pointer-events: none;
+    // opacity: 0.4;
+    height: 0;
+    opacity: 0;
+    position: absolute;
+
+    > :first-child {
+      margin-bottom: 0 !important;
+      margin-bottom: 0 !important;
+    }
+
+    &.loaded {
+      position: relative;
+      opacity: 1;
+      height: 500px;
+    }
+  }
+}

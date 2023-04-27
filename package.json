@@ -1,0 +1,17 @@
+{
+  "name": "wsuwp-plugin-html-snippets",
+  "version": "1.0.0",
+  "description": "A WordPress plugin to embed common HTML content throughout a site or network.",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "start": "wp-scripts start assets/src/index.js --output-path=assets/dist/",
+    "build": "wp-scripts build assets/src/index.js --output-path=assets/dist/"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@wordpress/scripts": "^26.2.0"
+  }
+}

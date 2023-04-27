@@ -22,8 +22,11 @@ class WSU_HTML_Snippets {
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 10 );
 		add_action( 'init', array( $this, 'setup_shortcode_ui' ) );
 		add_shortcode( 'html_snippet', array( $this, 'display_html_snippet' ) );
+		add_filter( 'template_include', array( $this, 'render_block_preview'), 99 );
 
 		require_once __DIR__ . '/includes/html-snippet-settings.php';
+		require_once __DIR__ . '/includes/html-snippet-block.php';
+		require_once __DIR__ . '/includes/scripts.php';
 	}
 
 	/**
@@ -48,12 +51,13 @@ class WSU_HTML_Snippets {
 		$args = array(
 			'labels'             => $labels,
 			'public'             => false,
-			'publicly_queryable' => false,
+			'publicly_queryable' => true,
 			'show_ui'            => true,
 			'show_in_menu'       => true,
 			'query_var'          => true,
 			'rewrite'            => false,
 			'has_archive'        => false,
+			'exclude_from_search'=> true,
 			'hierarchical'       => false,
 			'supports'           => array( 'title', 'editor' ),
 			'show_in_rest'       => ( ! empty( get_option('html_snippet_classic_editor', false ) ) ) ? false : true,
@@ -222,6 +226,28 @@ class WSU_HTML_Snippets {
 			),
 		);
 		shortcode_ui_register_for_shortcode( 'html_snippet', $args );
+	}
+
+	public function render_block_preview( $template ) {
+
+		global $wp_query;
+
+		if ( ! is_admin() && is_singular($this::$content_type_slug) && is_main_query() ) {
+
+			if($_GET['preview'] === 'true'){
+				add_filter('show_admin_bar', '__return_false');
+				return plugin_dir_path( __FILE__ ) . '/templates/block-preview.php';
+			}
+			else{
+				$wp_query->set_404();
+				status_header( 404 );
+				get_template_part( 404 );
+				exit();
+			}
+		}
+
+		return $template;
+
 	}
 }
 new WSU_HTML_Snippets();

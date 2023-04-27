@@ -39,6 +39,15 @@ const Edit = (props) => {
     }
   }
 
+  function getEditLink(post) {
+    if (!post) return;
+
+    const params = new URLSearchParams(location.search);
+    params.set("post", post.id);
+
+    return location.origin + location.pathname + "?" + params.toString();
+  }
+
   if (isLoading && !data) {
     return <p>loading...</p>;
   }
@@ -57,6 +66,8 @@ const Edit = (props) => {
     (o) => o.id.toString() === attributes.snippet_id
   );
 
+  const editLink = getEditLink(selectedOption);
+
   return (
     <>
       <div className={className}>
@@ -68,8 +79,18 @@ const Edit = (props) => {
             HTML Snippet
           </div>
           <div className={`${className}__controls`}>
+            {editLink && (
+              <Button
+                className={`${className}__control is-tertiary`}
+                icon="edit"
+                href={editLink}
+                target="_blank"
+              >
+                Edit Snippet
+              </Button>
+            )}
             <Button
-              className={`${className}__preview-toggle is-tertiary`}
+              className={`${className}__control is-tertiary`}
               icon={attributes.show_preview ? "hidden" : "visibility"}
               onClick={() => {
                 reset();

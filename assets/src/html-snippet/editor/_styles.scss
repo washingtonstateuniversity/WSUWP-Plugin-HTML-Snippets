@@ -23,7 +23,9 @@ $component-class-name: ".wp-block-wsuwp-html-snippet";
     gap: 1ch;
   }
 
-  &__preview-toggle {
+  &__controls,
+  &__control {
+    display: flex;
     gap: 0.5em;
   }
 

@@ -9,7 +9,7 @@ const Edit = (props) => {
   const previewRef = useRef(null);
 
   const apiPath = "/wp-json/wp/v2/wsu_html_snippet";
-  const { data, isLoading } = useFetch(`${apiPath}`);
+  const { data, isLoading } = useFetch(`${WSUWP_DATA.siteUrl}${apiPath}`);
 
   useEffect(() => {
     let sizeRefresher;

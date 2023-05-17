@@ -5,7 +5,7 @@ Version: 1.2.3
 Description: Embed common HTML content throughout a WordPress site.
 Author: washingtonstateuniversity, jeremyfelt
 Author URI: https://web.wsu.edu/
-Plugin URI: https://web.wsu.edu/
+Plugin URI: https://github.com/washingtonstateuniversity/WSUWP-Plugin-HTML-Snippets
 */
 
 class WSU_HTML_Snippets {

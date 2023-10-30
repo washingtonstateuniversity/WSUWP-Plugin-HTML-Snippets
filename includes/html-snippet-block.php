@@ -13,7 +13,7 @@ class Block_WSUWP_HTML_Snippet
     public static function render( $attrs, $content = '' )
     {
 
-        if ('' === $attrs['snippet_id']) {
+        if ('' === ($attrs['snippet_id'] ?? '')) {
             return;
         }
 

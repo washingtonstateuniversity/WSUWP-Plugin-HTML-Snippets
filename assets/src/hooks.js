@@ -25,7 +25,7 @@ const useFetch = function (url, options = {}) {
 
     (async () => {
       try {
-        console.log("Calling: " + url);
+        // console.log("Calling: " + url);
         const response = await fetch(url, options);
         const responseJson = await response.json();
 

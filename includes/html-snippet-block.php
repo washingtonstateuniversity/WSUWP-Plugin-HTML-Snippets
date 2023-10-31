@@ -13,15 +13,30 @@ class Block_WSUWP_HTML_Snippet
     public static function render( $attrs, $content = '' )
     {
 
-        if ('' === ($attrs['snippet_id'] ?? '')) {
+        if ( empty( $attrs['snippet_id'] ) ) {
             return;
         }
 
-        $content = apply_filters('the_content', get_the_content(null, false, $attrs['snippet_id']));
+       $args = array(
+            'p' => $attrs['snippet_id'],
+            'post_type' => 'wsu_html_snippet',
+        );
+
+        $the_query = new \WP_Query( $args );
 
         ob_start();
+
+        if ( $the_query->have_posts() ) {
+
+            while ( $the_query->have_posts() ) {
+                $the_query->the_post();
+                
+                the_content();
+            }
+        }
         
-        include plugin_dir_path(__DIR__) . '/templates/default.php';
+        // Restore original Post Data.
+        wp_reset_postdata();
 
         return ob_get_clean();
 

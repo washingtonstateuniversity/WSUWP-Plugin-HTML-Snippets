@@ -3,6 +3,7 @@ import { registerBlockType } from "@wordpress/blocks";
 import Edit from "./edit";
 
 registerBlockType("wsuwp/html-snippet", {
+  apiVersion: 2,
   title: "HTML Snippet",
   icon: "embed-generic",
   category: "advanced",

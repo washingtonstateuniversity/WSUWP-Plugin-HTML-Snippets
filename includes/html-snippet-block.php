@@ -13,20 +13,29 @@ class Block_WSUWP_HTML_Snippet
     public static function render( $attrs, $content = '' )
     {
 
-        if ( empty( $attrs['snippet_id'] ) ) {
+        if (is_admin() || empty($attrs['snippet_id']) ) {
             return;
         }
 
-       $args = array(
+        $args = array(
             'p' => $attrs['snippet_id'],
             'post_type' => 'wsu_html_snippet',
         );
 
-        $the_query = new \WP_Query( $args );
+        $the_query = new \WP_Query($args);
 
         ob_start();
 
         if ( $the_query->have_posts() ) {
+
+            while ( $the_query->have_posts() ) {
+                $the_query->the_post();
+                
+                the_content();
+            }
+        }
+        
+        if ($the_query->have_posts() ) {
 
             while ( $the_query->have_posts() ) {
                 $the_query->the_post();

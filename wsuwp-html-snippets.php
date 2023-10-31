@@ -1,18 +1,18 @@
 <?php
 /*
 Plugin Name: WSU HTML Snippets
-Version: 1.2.3
+Version: 1.2.5
 Description: Embed common HTML content throughout a WordPress site.
 Author: washingtonstateuniversity, jeremyfelt
 Author URI: https://web.wsu.edu/
-Plugin URI: https://web.wsu.edu/
+Plugin URI: https://github.com/washingtonstateuniversity/WSUWP-Plugin-HTML-Snippets
 */
 
 class WSU_HTML_Snippets {
 	/**
 	 * @var string The slug used for registering the content type.
 	 */
-	static $content_type_slug = 'wsu_html_snippet';
+    static $content_type_slug = 'wsu_html_snippet';
 
 	/**
 	 * Setup the plugin.
@@ -36,27 +36,27 @@ class WSU_HTML_Snippets {
 		$labels = array(
 			'name' => 'HTML Snippets',
 			'singular_name' => 'HTML Snippet',
-			'add_new' => 'Add New',
-			'add_new_item' => 'Add New HTML Snippet',
-			'edit_item' => 'Edit HTML Snippet',
-			'new_item' => 'New HTML Snippet',
-			'all_items' => 'All HTML Snippets',
-			'view_item' => 'View HTML Snippets',
-			'search_items' => 'Search HTML Snippets',
-			'not_found' => 'No HTML snippets found',
-			'not_found_in_trash' => 'No HTML snippets found in Trash',
-			'menu_name' => 'HTML Snippets',
-		);
+        'add_new' => 'Add New',
+        'add_new_item' => 'Add New HTML Snippet',
+        'edit_item' => 'Edit HTML Snippet',
+        'new_item' => 'New HTML Snippet',
+        'all_items' => 'All HTML Snippets',
+        'view_item' => 'View HTML Snippets',
+        'search_items' => 'Search HTML Snippets',
+        'not_found' => 'No HTML snippets found',
+        'not_found_in_trash' => 'No HTML snippets found in Trash',
+        'menu_name' => 'HTML Snippets',
+        );
 
-		$args = array(
-			'labels'             => $labels,
-			'public'             => false,
-			'publicly_queryable' => true,
-			'show_ui'            => true,
-			'show_in_menu'       => true,
-			'query_var'          => true,
-			'rewrite'            => false,
-			'has_archive'        => false,
+        $args = array(
+        'labels'             => $labels,
+        'public'             => false,
+        'publicly_queryable' => true,
+        'show_ui'            => true,
+        'show_in_menu'       => true,
+        'query_var'          => true,
+        'rewrite'            => false,
+        'has_archive'        => false,
 			'exclude_from_search'=> true,
 			'hierarchical'       => false,
 			'supports'           => array( 'title', 'editor' ),
@@ -67,7 +67,7 @@ class WSU_HTML_Snippets {
 	}
 
 	/**
-	 * Add the meta boxes used for HTML Snippets.
+     * Add the meta boxes used for HTML Snippets.
 	 *
 	 * @param string $post_type The post type of the current post being edited.
 	 */
@@ -80,8 +80,8 @@ class WSU_HTML_Snippets {
 	}
 
 	/**
-	 * Display the snippet ID for the current HTML snippet being edited. This snippet ID can
-	 * be used to embed a snippet in content throughout this site's network.
+     * Display the snippet ID for the current HTML snippet being edited. This snippet ID can
+     * be used to embed a snippet in content throughout this site's network.
 	 *
 	 * @param WP_Post $post The current post being edited.
 	 */
@@ -92,10 +92,10 @@ class WSU_HTML_Snippets {
 		<?php
 	}
 
-	/**
-	 * Display an HTML Snippet shortcode given attributes.
-	 *
-	 * @param array $atts
+    /**
+     * Display an HTML Snippet shortcode given attributes.
+     *
+     * @param array $atts
 	 *
 	 * @return string
 	 */
@@ -103,7 +103,7 @@ class WSU_HTML_Snippets {
 		$default_atts = array(
 			'id' => 0,
 			'snippet_id' => '',
-			'container' => '',
+        'container' => '',
 			'container_class' => '',
 			'container_id' => '',
 		);
@@ -172,7 +172,7 @@ class WSU_HTML_Snippets {
 		}
 
 		return $content;
-	}
+    }
 
 	/**
 	 * Configure support for the HTML Snippet shortcode with Shortcode UI.
@@ -182,46 +182,46 @@ class WSU_HTML_Snippets {
 			return;
 		}
 
-		$args = array(
-			'label'         => 'HTML Snippet',
-			'listItemImage' => 'dashicons-format-aside',
-			'post_type'     => array( 'post', 'page' ),
-			'attrs'         => array(
-				array(
-					'label'    => 'Select HTML Snippet',
-					'attr'     => 'id',
-					'type'     => 'post_select',
-					'query'    => array( 'post_type' => $this::$content_type_slug ),
-					'multiple' => false,
-				),
+        $args = array(
+        'label'         => 'HTML Snippet',
+        'listItemImage' => 'dashicons-format-aside',
+        'post_type'     => array( 'post', 'page' ),
+        'attrs'         => array(
+        array(
+                    'label'    => 'Select HTML Snippet',
+                    'attr'     => 'id',
+                    'type'     => 'post_select',
+                    'query'    => array( 'post_type' => $this::$content_type_slug ),
+                    'multiple' => false,
+        ),
 
-				array(
-					'label'    => 'Or HTML Snippet ID',
-					'attr'     => 'snippet_id',
-					'type'     => 'text',
-				),
+        array(
+        'label'    => 'Or HTML Snippet ID',
+        'attr'     => 'snippet_id',
+        'type'     => 'text',
+        ),
 
-				array(
-					'label'    => 'Wrapping container',
-					'attr'     => 'container',
-					'type'     => 'select',
-					'options'  => array(
-						''     => 'None',
-						'div'  => 'div',
-						'span' => 'span',
-					)
-				),
+        array(
+        'label'    => 'Wrapping container',
+        'attr'     => 'container',
+        'type'     => 'select',
+        'options'  => array(
+                        ''     => 'None',
+                        'div'  => 'div',
+                        'span' => 'span',
+        )
+        ),
 
-				array(
-					'label' => 'Wrapping container ID',
-					'attr'  => 'container_id',
-					'type'  => 'text',
-				),
+        array(
+        'label' => 'Wrapping container ID',
+        'attr'  => 'container_id',
+        'type'  => 'text',
+        ),
 
-				array(
-					'label' => 'Wrapping container class',
-					'attr'  => 'container_class',
-					'type'  => 'text',
+        array(
+        'label' => 'Wrapping container class',
+        'attr'  => 'container_class',
+        'type'  => 'text',
 				)
 			),
 		);
@@ -246,8 +246,8 @@ class WSU_HTML_Snippets {
 			}
 		}
 
-		return $template;
+        return $template;
 
-	}
+    }
 }
 new WSU_HTML_Snippets();

@@ -2,11 +2,14 @@ import { useFetch } from "../../hooks";
 
 const { useState, useRef, useEffect } = wp.element;
 const { SelectControl, Button, Spinner } = wp.components;
+const { useBlockProps } = wp.blockEditor;
 
 const Edit = (props) => {
-  const { className, attributes, setAttributes } = props;
+  const { attributes, setAttributes } = props;
   const [previewLoaded, setPreviewLoaded] = useState(false);
   const previewRef = useRef(null);
+  const blockClass = "wp-block-wsuwp-html-snippet";
+  const blockProps = useBlockProps();
 
   const apiPath = "/wp-json/wp/v2/wsu_html_snippet";
   const { data, isLoading } = useFetch(`${WSUWP_DATA.siteUrl}${apiPath}`);
@@ -48,107 +51,107 @@ const Edit = (props) => {
     return location.origin + location.pathname + "?" + params.toString();
   }
 
-  if (isLoading && !data) {
-    return <p>loading...</p>;
-  }
+  const options = data
+    ? [{ label: "- Select HTML Snippet -", value: "" }].concat(
+        data.map((s) => {
+          return { label: s.title.rendered, value: s.id };
+        })
+      )
+    : [];
 
-  if (!isLoading && !data) {
-    return <></>;
-  }
-
-  const options = [{ label: "- Select HTML Snippet -", value: "" }].concat(
-    data.map((s) => {
-      return { label: s.title.rendered, value: s.id };
-    })
-  );
-
-  const selectedOption = data.find(
-    (o) => o.id.toString() === attributes.snippet_id
-  );
+  const selectedOption = data
+    ? data.find((o) => o.id.toString() === attributes.snippet_id)
+    : undefined;
 
   const editLink = getEditLink(selectedOption);
 
   return (
-    <>
-      <div className={className}>
-        <div className={`${className}__header`}>
-          <div className={`${className}__label`}>
-            <span
-              className={`dashicon dashicons dashicons-embed-generic`}
-            ></span>
-            HTML Snippet
-          </div>
-          <div className={`${className}__controls`}>
-            {editLink && (
+    <div {...blockProps}>
+      {isLoading && !data && <p>loading...</p>}
+
+      {!isLoading && data && (
+        <>
+          <div className={`${blockClass}__header`}>
+            <div className={`${blockClass}__label`}>
+              <span
+                className={`dashicon dashicons dashicons-embed-generic`}
+              ></span>
+              HTML Snippet
+            </div>
+            <div className={`${blockClass}__controls`}>
+              {editLink && (
+                <Button
+                  className={`${blockClass}__control is-tertiary`}
+                  icon="edit"
+                  href={editLink}
+                  target="_blank"
+                >
+                  Edit Snippet
+                </Button>
+              )}
               <Button
-                className={`${className}__control is-tertiary`}
-                icon="edit"
-                href={editLink}
-                target="_blank"
+                className={`${blockClass}__control is-tertiary`}
+                icon={attributes.show_preview ? "hidden" : "visibility"}
+                onClick={() => {
+                  reset();
+                  setAttributes({ show_preview: !attributes.show_preview });
+                }}
               >
-                Edit Snippet
+                {attributes.show_preview ? "Hide" : "Show"} Preview
               </Button>
-            )}
-            <Button
-              className={`${className}__control is-tertiary`}
-              icon={attributes.show_preview ? "hidden" : "visibility"}
-              onClick={() => {
-                reset();
-                setAttributes({ show_preview: !attributes.show_preview });
-              }}
-            >
-              {attributes.show_preview ? "Hide" : "Show"} Preview
-            </Button>
+            </div>
           </div>
-        </div>
-        <div className="">
-          <SelectControl
-            className={`${className}__select-control`}
-            value={attributes.snippet_id}
-            options={options}
-            onChange={(id) => {
-              reset();
-              setAttributes({ snippet_id: id });
-            }}
-          />
-        </div>
+          <div className="">
+            <SelectControl
+              className={`${blockClass}__select-control`}
+              value={attributes.snippet_id}
+              options={options}
+              onChange={(id) => {
+                reset();
+                setAttributes({ snippet_id: id });
+              }}
+            />
+          </div>
 
-        {selectedOption && attributes.show_preview && !previewLoaded ? (
-          <Spinner className={`${className}__spinner`} />
-        ) : (
-          ""
-        )}
+          {selectedOption && attributes.show_preview && !previewLoaded ? (
+            <Spinner className={`${blockClass}__spinner`} />
+          ) : (
+            ""
+          )}
 
-        {selectedOption && attributes.show_preview ? (
-          // <div
-          //   className={`${className}__preview`}
-          //   dangerouslySetInnerHTML={{
-          //     __html: selectedOption.content.rendered,
-          //   }}
-          // ></div>
+          {selectedOption && attributes.show_preview ? (
+            // <div
+            //   className={`${blockClass}__preview`}
+            //   dangerouslySetInnerHTML={{
+            //     __html: selectedOption.content.rendered,
+            //   }}
+            // ></div>
 
-          <iframe
-            ref={previewRef}
-            className={`${className}__preview ${previewLoaded ? "loaded" : ""}`}
-            src={`${selectedOption.link}&preview=true`}
-            onLoad={(e) => {
-              // const el = e.target;
-              // console.log(e.target);
-              setPreviewLoaded(true);
+            <iframe
+              ref={previewRef}
+              className={`${blockClass}__preview ${
+                previewLoaded ? "loaded" : ""
+              }`}
+              src={`${selectedOption.link}&preview=true`}
+              onLoad={(e) => {
+                // const el = e.target;
+                // console.log(e.target);
+                setPreviewLoaded(true);
 
-              // setTimeout(() => {
-              //   el.style.height =
-              //     el.contentWindow.document.body.querySelector(
-              //       "#wsu-gutenberg-snippet-preview"
-              //     ).offsetHeight + "px";
-              // }, 200);
-            }}
-          ></iframe>
-        ) : (
-          ""
-        )}
-      </div>
-    </>
+                // setTimeout(() => {
+                //   el.style.height =
+                //     el.contentWindow.document.body.querySelector(
+                //       "#wsu-gutenberg-snippet-preview"
+                //     ).offsetHeight + "px";
+                // }, 200);
+              }}
+            ></iframe>
+          ) : (
+            ""
+          )}
+        </>
+      )}
+    </div>
   );
 };
 

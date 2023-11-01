@@ -35,15 +35,6 @@ class Block_WSUWP_HTML_Snippet
             }
         }
         
-        if ($the_query->have_posts() ) {
-
-            while ( $the_query->have_posts() ) {
-                $the_query->the_post();
-                
-                the_content();
-            }
-        }
-        
         // Restore original Post Data.
         wp_reset_postdata();
 

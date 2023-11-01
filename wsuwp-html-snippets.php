@@ -135,15 +135,33 @@ class WSU_HTML_Snippets {
 		if ( ( empty( $atts['id'] ) || 0 === absint( $atts['id'] ) ) ) {
 			return '';
 		}
+		
 
-		$post = get_post( $atts['id'] );
+		$args = array(
+            'p' => $atts['id'],
+            'post_type' => 'wsu_html_snippet',
+        );
+
+        $the_query = new WP_Query( $args );
+
+        ob_start();
+
+        if ( $the_query->have_posts() ) {
+
+            while ( $the_query->have_posts() ) {
+                $the_query->the_post();
+                
+                the_content();
+            }
+        }
+        
+        // Restore original Post Data.
+        wp_reset_postdata();
+
+        $content = ob_get_clean();
 
 		if ( is_multisite() && ms_is_switched() ) {
 			restore_current_blog();
-		}
-
-		if ( ! $post || $this::$content_type_slug !== $post->post_type ) {
-			return '';
 		}
 
 		if ( in_array( $atts['container'], array( 'div', 'span' ) ) ) {
@@ -159,19 +177,12 @@ class WSU_HTML_Snippets {
 
 			$container_open .= '>';
 
-			$content = $container_open .  apply_filters( 'the_content', $post->post_content ) . '</' . $atts['container'] . '>';
-			$content = do_shortcode( $content );
-		} else {
-			$content = apply_filters( 'the_content', $post->post_content );
-			$content = do_shortcode( $content );
-		}
+			$content = $container_open .  $content . '</' . $atts['container'] . '>';
 
-
-		if ( ! has_filter( 'the_content', 'wpautop' ) ) {
-			$content = wpautop( $content );
 		}
 
 		return $content;
+
     }
 
 	/**
